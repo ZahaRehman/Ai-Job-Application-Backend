@@ -37,27 +37,22 @@ exports.getMyJobs = asyncErrorHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
   const offset = (page - 1) * limit;
-
   const user = await jobRepository.findUserById(req.user.user_id);
   if (!user) {
     return next(new CustomError("User not found", 404));
   }
-
   const queryOptions = {
     limit,
     offset,
     order: [["createdAt", "DESC"]],
   };
-
   if (user.user_type_id !== 2) {
     //2 is admin role
     queryOptions.where = { user_id: req.user.user_id };
   }
-
   const { count, rows: jobs } = await jobRepository.findAndCountJobs(
     queryOptions
   );
-
   res.success({
     currentPage: page,
     totalPages: Math.ceil(count / limit),
@@ -67,10 +62,9 @@ exports.getMyJobs = asyncErrorHandler(async (req, res, next) => {
 });
 
 
-
 exports.updateJobById = asyncErrorHandler(async (req, res, next) => {
   const { id } = req.params;
-  const { title, description, requirements } = req.body;
+  const { title, description, requirements, skills } = req.body;
 
   // Find job
   const job = await jobRepository.findJobById(id);
@@ -83,6 +77,7 @@ exports.updateJobById = asyncErrorHandler(async (req, res, next) => {
     title: title ?? job.title,
     description: description ?? job.description,
     requirements: requirements ?? job.requirements,
+    skills: skills ?? job.skills,
   });
 
   const responseData = {
@@ -90,6 +85,7 @@ exports.updateJobById = asyncErrorHandler(async (req, res, next) => {
     title: updatedJob.title,
     description: updatedJob.description,
     requirements: updatedJob.requirements,
+    skills: updatedJob.skills,
     updatedAt: updatedJob.updatedAt,
   };
 

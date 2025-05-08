@@ -8,6 +8,7 @@ const validateConversation = require("../middleware/interviewConversationValidat
 const { uploadImages } = require("../middleware/uploadMiddleware"); // assuming you’ve configured Cloudinary multer
 const userController = require("../controllers/applicationController");
 
+
 router.use(responseHandler);  // for setting the proper response
 
 router.post(
@@ -39,3 +40,10 @@ router.patch(
 );
 
 module.exports = router;
+
+router.get(
+  "/profile",
+  protect,
+  applicationController.getProfile
+);
+

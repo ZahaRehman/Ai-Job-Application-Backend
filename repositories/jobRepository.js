@@ -25,4 +25,7 @@ module.exports = {
   async findUserById(userId) {
     return await User.findByPk(userId);
   },
+  
+
+  
 };

@@ -77,3 +77,23 @@ exports.updateProfile = asyncErrorHandler(async (req, res, next) => {
     }
   });
 });
+
+
+exports.getProfile = (req, res) => {
+  try {
+    const { user_id, username, email, cv_url, profile_picture } = req.user;
+
+    res.success(
+      {
+        user_id,
+        username,
+        email,
+        cv_url,
+        profile_picture,
+      },
+      "Profile fetched successfully"
+    );
+  } catch (err) {
+    res.error("Failed to fetch user profile");
+  }
+};
