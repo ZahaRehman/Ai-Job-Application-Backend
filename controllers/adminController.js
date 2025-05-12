@@ -32,27 +32,32 @@ exports.createJob = asyncErrorHandler(async (req, res, next) => {
 });
 
 
-
 exports.getMyJobs = asyncErrorHandler(async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
   const offset = (page - 1) * limit;
+
   const user = await jobRepository.findUserById(req.user.user_id);
   if (!user) {
     return next(new CustomError("User not found", 404));
   }
+
   const queryOptions = {
     limit,
     offset,
     order: [["createdAt", "DESC"]],
   };
-  if (user.user_type_id !== 2) {
-    //2 is admin role
+
+  if (user.user_type_id === 2) {
+    // Admin: show only jobs created by this admin
     queryOptions.where = { user_id: req.user.user_id };
+  } else {
+    // Regular user: show all jobs
+    queryOptions.where = {}; // or omit this line
   }
-  const { count, rows: jobs } = await jobRepository.findAndCountJobs(
-    queryOptions
-  );
+
+  const { count, rows: jobs } = await jobRepository.findAndCountJobs(queryOptions);
+
   res.success({
     currentPage: page,
     totalPages: Math.ceil(count / limit),
