@@ -2,7 +2,6 @@
 node_modules/
 
 # Environment variables
-.env
 
 # Logs
 logs
@@ -19,3 +18,4 @@ Thumbs.db
 # Optional: database or uploads
 uploads/
 database.sqlite
+config.bat
