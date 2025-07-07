@@ -5,7 +5,7 @@ const { sequelize } = require("./config/sequelize");
 const bodyParser = require("body-parser");
 const setupRoutes = require("./config/routes");
 const InterviewWebSocketService = require('./socket/server');
-const CustomError = require("./utils/CustomError"); 
+const CustomError = require("./Utils/customError"); 
 const rateLimit = require('express-rate-limit');
 
 
