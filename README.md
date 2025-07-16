@@ -4,8 +4,7 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/Ai-Job-Application-Backend.git
-   cd Ai-Job-Application-Backend
+   git clone ###
    ```
 
 2. **Install dependencies**
@@ -19,10 +18,13 @@
    ```
 
 4. **Configure your database and environment variables**
-   - Edit `src/config/config.json` with your database settings.
-   - Set any required environment variables (e.g., `GEMINI_API_KEY`).
+   - Set any required environment variables (e.g., `GEMINI_API_KEY`) and .env file.
 
 5. **Run database migrations and seeders**
+   - By default, the project is set up to use AWS RDS.  
+   - If you want to run a local database (e.g., PostgreSQL or MySQL), update your `.env` and `src/config/config.js` with your local DB credentials.
+   - Set any required environment variables (e.g., `GEMINI_API_KEY`).
+
    ```bash
    npx sequelize-cli db:migrate
    npx sequelize-cli db:seed:all
