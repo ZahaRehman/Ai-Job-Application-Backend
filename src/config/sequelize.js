@@ -7,20 +7,7 @@ const sequelize = new Sequelize({
   password: process.env.DB_PASSWORD,
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
-  dialect: 'postgres',
-  dialectOptions: {
-    ssl: {
-      require: true,          // Require SSL
-      rejectUnauthorized: false // For self-signed certificates
-    }
-  },
-  pool: {
-    max: 5,
-    min: 0,
-    acquire: 30000,
-    idle: 10000
-  },
-  logging: console.log        // Enable query logging for debugging
+  dialect: 'postgres'
 });
 
 // Test the connection

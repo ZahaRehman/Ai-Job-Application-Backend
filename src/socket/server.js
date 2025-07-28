@@ -10,7 +10,7 @@ const prompt= require('./prompts')
 
 class InterviewWebSocketService {
   constructor(server) {
-    this.MAX_QUESTIONS = 5;
+    this.MAX_QUESTIONS = 4;
     this.wss = new WebSocketServer({ server });
     this.sessionManager = new SessionManager(this.MAX_QUESTIONS);
     this.aiService = new AIService(
@@ -169,7 +169,7 @@ class InterviewWebSocketService {
       parts: [{ text: data.text }],
     });
 
-    if (Math.random() < 0.7) {
+    if (Math.random() < 0.4) {
       const acknowledgment = await this.aiService.generateAcknowledgment(session);
       if (acknowledgment) {
         session.messages.push({
