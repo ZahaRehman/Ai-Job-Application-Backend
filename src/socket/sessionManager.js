@@ -1,3 +1,5 @@
+const config = require('./config');
+
 class SessionManager {
   constructor(maxQuestions) {
     this.sessions = new Map();
@@ -55,7 +57,7 @@ class SessionManager {
   }
 
   shouldReferenceResume(session) {
-    return session.resumeText && Math.random() < 0.6;
+    return session.resumeText && Math.random() < config.SHOULD_REFERENCE_RESUME_PROB;
   }
 }
 

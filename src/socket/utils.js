@@ -1,3 +1,4 @@
+const config = require('./config');
 // Utility functions
 class InterviewUtils {
   static weightedRandom(weights) {
@@ -14,12 +15,7 @@ class InterviewUtils {
   }
 
   static getTemperature(phase) {
-    const temps = {
-      warmup: 0.7,
-      mid: 0.6,
-      conclusion: 0.5,
-    };
-    return temps[phase];
+    return config.PHASE_TEMPERATURES[phase];
   }
 
   static getInterviewPhase(questionCount, maxQuestions) {

@@ -1,9 +1,10 @@
 const InterviewUtils = require('./utils');
+const config = require('./config');
 
 class InterviewEngine {
   constructor(maxQuestions) {
     this.MAX_QUESTIONS = maxQuestions;
-    this.RESUME_QUESTION_RATIO = 0.3;
+    this.RESUME_QUESTION_RATIO = config.RESUME_QUESTION_RATIO;
   }
 
   selectQuestionType(phase, session) {
@@ -40,17 +41,17 @@ class InterviewEngine {
 
     const interestingAspects =
       session.lastResponseAnalysis?.interestingAspects?.length || 0;
-    const baseProbability = 0.4;
-    const followUpProbability = baseProbability + interestingAspects * 0.15;
+    const baseProbability = config.FOLLOWUP_BASE_PROBABILITY;
+    const followUpProbability = baseProbability + interestingAspects * config.FOLLOWUP_INTERESTING_MULTIPLIER;
 
-    return Math.random() < Math.min(followUpProbability, 0.7);
+    return Math.random() < Math.min(followUpProbability, config.FOLLOWUP_MAX_PROBABILITY);
   }
 
   determineCandidateLevel(analysis, session) {
     const { technicalDepth, experienceIndicators, wordCount, sentiment } = analysis;
     const progressFactor = session.questionCount / this.MAX_QUESTIONS;
 
-    const technicalWeight = 0.45;
+    const technicalWeight = config.TECHNICAL_WEIGHT;
     const normalizedTechnicalDepth = (technicalDepth / 5) * 5;
     session.candidateScore.technicalDepth =
       session.candidateScore.technicalDepth * (1 - technicalWeight) +
@@ -61,7 +62,7 @@ class InterviewEngine {
     if (experienceIndicators.includes("mid")) experienceScore += 2;
     if (experienceIndicators.includes("junior")) experienceScore += 0;
 
-    const experienceWeight = 0.3;
+    const experienceWeight = config.EXPERIENCE_WEIGHT;
     session.candidateScore.experienceScore =
       session.candidateScore.experienceScore * (1 - experienceWeight) +
       experienceScore * experienceWeight;
@@ -70,7 +71,7 @@ class InterviewEngine {
       Math.min(wordCount / 30, 1) * 3 +
       (sentiment === "positive" ? 2 : sentiment === "neutral" ? 1 : 0);
 
-    const communicationWeight = 0.3;
+    const communicationWeight = config.COMMUNICATION_WEIGHT;
     session.candidateScore.communicationScore =
       session.candidateScore.communicationScore * (1 - communicationWeight) +
       communicationScore * communicationWeight;
@@ -91,8 +92,8 @@ class InterviewEngine {
       },
     });
 
-    const seniorThreshold = 3.0 + 0.7 * progressFactor;
-    const midThreshold = 1.5 + 0.5 * progressFactor;
+    const seniorThreshold = config.SENIOR_THRESHOLD_BASE + config.SENIOR_THRESHOLD_PROGRESS * progressFactor;
+    const midThreshold = config.MID_THRESHOLD_BASE + config.MID_THRESHOLD_PROGRESS * progressFactor;
 
     
     console.log("senior threshold---->", seniorThreshold);

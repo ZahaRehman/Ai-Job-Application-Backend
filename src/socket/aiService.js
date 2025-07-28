@@ -1,3 +1,5 @@
+const config = require('./config');
+
 class AIService {
   constructor(apiKey, modelName) {
     this.GEMINI_API_KEY = apiKey;
@@ -5,7 +7,7 @@ class AIService {
     this.API_URL = `https://generativelanguage.googleapis.com/v1/models/${this.MODEL_NAME}:generateContent?key=${this.GEMINI_API_KEY}`;
   }
 
-  async callGeminiAPI(messages, temperature = 0.5) {
+  async callGeminiAPI(messages, temperature = config.AI_TEMPERATURE) {
     try {
       const response = await fetch(this.API_URL, {
         method: "POST",
@@ -16,11 +18,11 @@ class AIService {
           contents: messages,
           generationConfig: {
             temperature: temperature,
-            maxOutputTokens: 300,
-            topP: 0.9,
+            maxOutputTokens: config.AI_MAX_OUTPUT_TOKENS,
+            topP: config.AI_TOP_P,
           },
         }),
-        timeout: 30000,
+        timeout: config.AI_TIMEOUT,
       });
 
       if (!response.ok) {
@@ -56,7 +58,7 @@ class AIService {
       ],
     };
 
-    return await this.callGeminiAPI([followUpPrompt], 0.5);
+    return await this.callGeminiAPI([followUpPrompt], config.AI_TEMPERATURE);
   }
 
   async generateAcknowledgment(session) {
@@ -83,7 +85,7 @@ class AIService {
       ],
     };
 
-    return await this.callGeminiAPI([acknowledgmentPrompt], 0.5);
+    return await this.callGeminiAPI([acknowledgmentPrompt], config.AI_TEMPERATURE);
   }
 }
 
