@@ -7,17 +7,18 @@ const AIService = require("./aiService");
 const InterviewEngine = require("./interviewEngine");
 const InterviewUtils = require("./utils");
 const prompt= require('./prompts')
+const config = require('./config');
 
 class InterviewWebSocketService {
   constructor(server) {
-    this.MAX_QUESTIONS = 4;
+    this.MAX_QUESTIONS = config.MAX_QUESTIONS;
     this.wss = new WebSocketServer({ server });
-    this.sessionManager = new SessionManager(this.MAX_QUESTIONS);
+    this.sessionManager = new SessionManager(config.MAX_QUESTIONS);
     this.aiService = new AIService(
       process.env.GEMINI_API_KEY,
-      "gemini-1.5-flash"
+      config.MODEL_NAME
     );
-    this.interviewEngine = new InterviewEngine(this.MAX_QUESTIONS);
+    this.interviewEngine = new InterviewEngine(config.MAX_QUESTIONS);
     this.userRepository = require("../repositories/userRepository");
     this.interviewRepository = require("../repositories/interviewRepository");
     this.applicationRepository = require("../repositories/applicationRepository");
@@ -128,7 +129,7 @@ class InterviewWebSocketService {
         parts: [{ text: introPrompt }],
       });
 
-      const responseText = await this.aiService.callGeminiAPI(session.messages, 0.7);
+      const responseText = await this.aiService.callGeminiAPI(session.messages, config.AI_INTRO_TEMPERATURE);
       session.messages.push({
         role: "model",
         parts: [{ text: responseText }],
@@ -432,7 +433,7 @@ class InterviewWebSocketService {
       } else {
         this.setNextQuestionTimeout(session);
       }
-    }, 300000);
+    }, config.FOLLOWUP_TIMEOUT);
   }
 
   async concludeInterview(session, isTimeoutConclusion = false) {
